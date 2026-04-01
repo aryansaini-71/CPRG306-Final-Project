@@ -1,0 +1,48 @@
+/* components/Navbar.module.css */
+.nav {
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  background-color: #000;
+  border-bottom: 1px solid rgba(250, 129, 47, 0.2);
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  letter-spacing: 3px;
+  color: var(--brand-gold);
+}
+
+.links {
+  display: flex;
+  gap: 25px;
+}
+
+.links a {
+  text-decoration: none;
+  color: var(--brand-cream);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.links a:hover {
+  color: var(--brand-orange);
+}
+
+.adminBtn {
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border: 1px solid var(--brand-gold);
+  color: var(--brand-gold);
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.adminBtn:hover {
+  background-color: var(--brand-gold);
+  color: #000;
+}
