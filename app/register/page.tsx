@@ -29,7 +29,6 @@ export default function Register() {
       email,
       password,
       options: {
-        // This saves the birth year into the user's metadata in Supabase
         data: { birth_year: parseInt(year) }
       }
     });
@@ -38,7 +37,6 @@ export default function Register() {
       setMessage(error.message);
     } else {
       setMessage("Success! Check your email for a verification link.");
-      // Optional: Redirect to login after a few seconds
       setTimeout(() => router.push('/login'), 3000);
     }
     setLoading(false);

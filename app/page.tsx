@@ -6,7 +6,6 @@ export default function Home() {
   const [birthYear, setBirthYear] = useState("");
   const [error, setError] = useState("");
 
-  // Logic to check age
   const handleVerify = () => {
     const currentYear = new Date().getFullYear();
     const age = currentYear - parseInt(birthYear);
@@ -22,7 +21,6 @@ export default function Home() {
     }
   };
 
-  // YOUR 3 CATEGORIES
   const categories = [
     { title: "Hard Liquor", desc: "Whiskey, Vodka, & Gin", color: "var(--brand-gold)" },
     { title: "Wine", desc: "Red, White, & Sparkling", color: "var(--brand-red)" },
@@ -32,7 +30,7 @@ export default function Home() {
   return (
     <main style={{ backgroundColor: 'var(--brand-dark)', minHeight: '100vh' }}>
       
-      {/* --- FEATURE: SECURITY AGE GATE --- */}
+
       {!isVerified && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
@@ -78,7 +76,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* --- MAIN PAGE CONTENT (Only shows fully once verified) --- */}
+
       <section style={{ textAlign: 'center', padding: '120px 20px 60px' }}>
         <h1 style={{ color: 'var(--brand-gold)', fontSize: '4.5rem', fontWeight: '900' }}>SPIRIT SOURCE</h1>
         <p style={{ color: 'var(--brand-cream)', letterSpacing: '4px', opacity: 0.7 }}>PREMIUM SELECTIONS</p>

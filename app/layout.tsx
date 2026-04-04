@@ -8,7 +8,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body style={{ margin: 0, padding: 0 }}>
         <Navbar />
-        {children} {/* This is where page.tsx content goes */}
+        {children} 
       </body>
     </html>
   );

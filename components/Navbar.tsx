@@ -20,7 +20,7 @@ export default function Navbar() {
             <div className={styles.links}>
             <Link href="/">Home</Link>
             <Link href="/products">Shop</Link>
-            <Link href="/login">Sign In</Link> {/* Add this */}
+            <Link href="/login">Sign In</Link> 
             </div>
       </Link>
     </nav>
