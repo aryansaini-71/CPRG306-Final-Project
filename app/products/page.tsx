@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '../../lib/supabase';
+import { useCart } from '../context/cart-context';
 
 interface Product {
   id: number;
@@ -17,6 +18,7 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const { addToCart } = useCart();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -88,15 +90,34 @@ export default function ShopPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '30px' }}>
           {filteredProducts.map((product) => (
-            <Link key={product.id} href={`/products/${product.id}`} style={{ textDecoration: 'none' }}>
-              <div style={{ backgroundColor: '#111', border: '1px solid rgba(250, 177, 47, 0.1)', padding: '20px', textAlign: 'center' }}>
+            <div key={product.id} style={{ backgroundColor: '#111', border: '1px solid rgba(250, 177, 47, 0.1)', padding: '20px', textAlign: 'center' }}>
+              <Link href={`/products/${product.id}`} style={{ textDecoration: 'none' }}>
                 <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '15px' }}>
                   <img src={product.image_url} alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                 </div>
                 <h3 style={{ color: '#FEF3E2', fontSize: '1rem', height: '40px' }}>{product.name}</h3>
                 <p style={{ color: '#FAB12F', fontWeight: 'bold', marginTop: '10px' }}>${product.price}</p>
-              </div>
-            </Link>
+              </Link>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  addToCart({ id: product.id, name: product.name, price: product.price, image_url: product.image_url });
+                }}
+                style={{
+                  marginTop: '15px',
+                  padding: '10px 20px',
+                  backgroundColor: 'var(--brand-gold)',
+                  color: 'var(--brand-dark)',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  width: '100%'
+                }}
+              >
+                Add to Cart
+              </button>
+            </div>
           ))}
         </div>
 

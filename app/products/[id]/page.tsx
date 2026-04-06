@@ -3,13 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
 import Link from 'next/link';
+import { useCart } from '../../context/cart-context';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const router = useRouter();
+  const { addToCart } = useCart();
   
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   useEffect(() => {
     async function fetchProductData() {
@@ -104,21 +107,33 @@ export default function ProductDetail() {
             </div>
 
             {/* CTA Button */}
-            <button style={{
-              width: '100%',
-              marginTop: '50px',
-              padding: '20px',
-              backgroundColor: '#FAB12F',
-              color: '#000',
-              fontWeight: 'bold',
-              fontSize: '1rem',
-              letterSpacing: '2px',
-              border: 'none',
-              cursor: 'pointer',
-              borderRadius: '2px',
-              transition: 'transform 0.2s'
-            }}>
-              ADD TO SHOPPING BAG
+            <button 
+              onClick={() => {
+                addToCart({
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  image_url: product.image_url
+                });
+                setButtonClicked(true);
+                setTimeout(() => setButtonClicked(false), 1500); // Revert after 1.5 seconds
+              }}
+              style={{
+                width: '100%',
+                marginTop: '50px',
+                padding: '20px',
+                backgroundColor: buttonClicked ? '#4CAF50' : '#FAB12F',
+                color: buttonClicked ? 'white' : '#000',
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                letterSpacing: '2px',
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: '2px',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              {buttonClicked ? 'ADDED TO CART!' : 'ADD TO CART'}
             </button>
             
             <p style={{ textAlign: 'center', color: '#666', fontSize: '0.75rem', marginTop: '15px' }}>
