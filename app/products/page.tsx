@@ -2,11 +2,23 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '../../lib/supabase';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../context/cart-context';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+  image_url: string;
+}
 
 export default function ShopPage() {
-  const [products, setProducts] = useState<any[]>([]);
-  const { cart, addToCart, updateQuantity } = useCart();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const { addToCart } = useCart();
 
   useEffect(() => {
     async function load() {

@@ -33,6 +33,40 @@
   color: var(--brand-orange);
 }
 
+.cartLink {
+  position: relative;
+}
+
+.cartCount {
+  background-color: var(--brand-gold);
+  color: var(--brand-dark);
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 5px;
+}
+
+.userEmail {
+  color: var(--brand-cream);
+  font-size: 0.85rem;
+  text-transform: none;
+}
+
+.signOutBtn {
+  background: var(--brand-gold);
+  color: var(--brand-dark);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.signOutBtn:hover {
+  background: var(--brand-cream);
+}
+
 .adminBtn {
   font-size: 0.75rem;
   padding: 6px 12px;

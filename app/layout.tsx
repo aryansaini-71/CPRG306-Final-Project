@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import './globals.css';
-import { CartProvider } from '../context/CartContext';
 import Navbar from '../components/Navbar';
+import { CartProvider } from "./context/cart-context";
+import { AuthProvider } from "./context/auth-context";
 
 interface NavbarProps {
   toggleTheme: () => void;
@@ -22,12 +23,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-theme={theme}>
       <body>
-        <CartProvider>
-          {/* We pass the toggle function to the Navbar so the button can use it */}
-          <Navbar toggleTheme={toggleTheme} currentTheme={theme} />
-          {children}
-        </CartProvider>
-      </body>
-    </html>
+        <AuthProvider>
+          <CartProvider>
+            {/* We pass the toggle function to the Navbar so the button can use it */}
+            <Navbar toggleTheme={toggleTheme} currentTheme={theme} />
+            {children}
+          </CartProvider>
+        </AuthProvider>
   );
 }
