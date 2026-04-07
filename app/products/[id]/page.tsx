@@ -2,130 +2,53 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '../../../lib/supabase';
-import Link from 'next/link';
+import { useCart } from '../../../context/CartContext';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const router = useRouter();
-  
+  const { addToCart } = useCart();
   const [product, setProduct] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchProductData() {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching bottle:", error.message);
-        setLoading(false);
-      } else {
-        setProduct(data);
-        setLoading(false);
-      }
+    async function getData() {
+      const { data } = await supabase.from('products').select('*').eq('id', id).single();
+      if (data) setProduct(data);
     }
-
-    if (id) {
-      fetchProductData();
-    }
+    getData();
   }, [id]);
 
-  if (loading) {
-    return (
-      <div style={{ backgroundColor: '#0D0D0D', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: '#FAB12F', fontSize: '1.2rem', letterSpacing: '2px' }}>UNCAORKING DETAILS...</p>
-      </div>
-    );
-  }
-
-  // Error state
-  if (!product) {
-    return (
-      <div style={{ backgroundColor: '#0D0D0D', minHeight: '100vh', textAlign: 'center', padding: '100px' }}>
-        <h2 style={{ color: '#FA4032' }}>BOTTLE NOT FOUND</h2>
-        <Link href="/products" style={{ color: '#FEF3E2', textDecoration: 'underline' }}>Return to Shop</Link>
-      </div>
-    );
-  }
+  if (!product) return <div style={{ padding: '100px', textAlign: 'center', color: 'var(--gold)' }}>LOADING ASSET...</div>;
 
   return (
-    <main style={{ backgroundColor: '#0D0D0D', minHeight: '90vh', padding: '60px 20px' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <main style={{ padding: '80px 20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '80px' }}>
         
-        {/* Back Button */}
-        <button 
-          onClick={() => router.back()}
-          style={{ background: 'none', border: 'none', color: '#FEF3E2', cursor: 'pointer', marginBottom: '30px', opacity: 0.6 }}
-        >
-          ← BACK TO COLLECTION
-        </button>
+        {/* Bottle Image */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img 
+            src={product.image_url} 
+            alt={product.name} 
+            style={{ width: '100%', maxHeight: '600px', objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.3))' }} 
+          />
+        </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '60px', alignItems: 'start' }}>
+        {/* Info */}
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <p style={{ color: 'var(--gold)', letterSpacing: '4px', fontSize: '0.8rem', fontWeight: 'bold' }}>{product.category.toUpperCase()}</p>
+          <h1 style={{ fontSize: '3.5rem', margin: '10px 0', fontWeight: '900', color: 'var(--text-main)' }}>{product.name}</h1>
+          <p style={{ fontSize: '2.5rem', fontWeight: '300', marginBottom: '40px' }}>${product.price}</p>
           
-          <div style={{ 
-            backgroundColor: '#111', 
-            border: '1px solid rgba(250, 177, 47, 0.1)', 
-            padding: '40px',
-            display: 'flex',
-            justifyContent: 'center',
-            borderRadius: '4px'
-          }}>
-            <img 
-              src={product.image_url} 
-              alt={product.name} 
-              style={{ width: '100%', maxHeight: '550px', objectFit: 'contain' }} 
-            />
-          </div>
-
-          <div style={{ padding: '20px 0' }}>
-            <span style={{ color: '#FA812F', letterSpacing: '4px', textTransform: 'uppercase', fontSize: '0.85rem' }}>
-              {product.category}
-            </span>
-            
-            <h1 style={{ color: '#FAB12F', fontSize: '3.5rem', fontWeight: '800', margin: '15px 0' }}>
-              {product.name}
-            </h1>
-
-            <p style={{ color: '#FEF3E2', fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '40px' }}>
-              ${product.price}
-            </p>
-
-            <div style={{ borderTop: '1px solid #222', paddingTop: '30px' }}>
-              <h3 style={{ color: '#FEF3E2', marginBottom: '15px', fontSize: '1rem' }}>DESCRIPTION</h3>
-              <p style={{ color: 'rgba(254, 243, 226, 0.7)', lineHeight: '1.8', fontSize: '1.05rem' }}>
-                This {product.name} is a cornerstone of our {product.category} collection. 
-                Sourced from the finest distilleries and vineyards, it offers a profile 
-                that is both sophisticated and approachable. Perfect for collectors 
-                and enthusiasts alike.
-              </p>
-            </div>
-
-            {/* CTA Button */}
-            <button style={{
-              width: '100%',
-              marginTop: '50px',
-              padding: '20px',
-              backgroundColor: '#FAB12F',
-              color: '#000',
-              fontWeight: 'bold',
-              fontSize: '1rem',
-              letterSpacing: '2px',
-              border: 'none',
-              cursor: 'pointer',
-              borderRadius: '2px',
-              transition: 'transform 0.2s'
-            }}>
-              ADD TO SHOPPING BAG
-            </button>
-            
-            <p style={{ textAlign: 'center', color: '#666', fontSize: '0.75rem', marginTop: '15px' }}>
-              *Must be 21+ to purchase. Verification required at checkout.
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '30px', marginBottom: '50px' }}>
+            <p style={{ opacity: 0.7, lineHeight: '1.8' }}>
+              A masterwork of distillation, this {product.name} represents the absolute pinnacle of our {product.category} collection. 
+              Each bottle is hand-inspected for quality and provenance.
             </p>
           </div>
 
+          <button onClick={() => addToCart(product)} className="btn-gold" style={{ width: '100%', padding: '20px' }}>
+            SECURE BOTTLE
+          </button>
         </div>
       </div>
     </main>

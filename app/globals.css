@@ -1,25 +1,68 @@
-/* app/globals.css */
 :root {
-  --brand-cream: #FEF3E2;
-  --brand-gold: #FAB12F;
-  --brand-orange: #FA812F;
-  --brand-red: #FA4032;
-  --brand-dark: #0D0D0D;
+  /* Dark Mode Defaults */
+  --bg-main: #121212;
+  --bg-card: #1E1E1E;
+  --text-main: #F2E8CF;
+  --gold: #C5A028;
+  --border: rgba(197, 160, 40, 0.15);
+  --shadow: rgba(0, 0, 0, 0.5);
+  --radius: 16px; /* Softer edges */
+  --logo-filter: invert(1) brightness(2);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+[data-theme='light'] {
+  --bg-main: #F9F9F7;
+  --bg-card: #FFFFFF;
+  --text-main: #121212;
+  --gold: #A3821A;
+  --border: rgba(0, 0, 0, 0.1);
+  --shadow: rgba(0, 0, 0, 0.05);
+  --logo-filter: none;
 }
 
 body {
-  background-color: var(--brand-dark);
-  color: var(--brand-cream);
-  font-family: sans-serif;
-  line-height: 1.5;
+  margin: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-main {
-  min-height: calc(100vh - 80px); /* Subtracts Navbar height */
+/* Fix for Spirit Source Logo */
+.logo-img {
+  filter: var(--logo-filter);
+  transition: filter 0.3s ease;
+}
+
+.premium-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px var(--shadow);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.premium-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gold);
+}
+
+/* Success Pop-up (Toast) */
+.toast-notif {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #2ECC71;
+  color: white;
+  padding: 16px 28px;
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
