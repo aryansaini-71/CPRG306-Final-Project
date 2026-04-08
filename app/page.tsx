@@ -1,65 +1,36 @@
-"use client";
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { supabase } from '../lib/supabase';
+import { GooeyText } from "@/components/ui/gooey-text-morphing";
+import Link from "next/link";
 
-export default function HomePage() {
-  const [featuredWines, setFeaturedWines] = useState<any[]>([]);
-
-  useEffect(() => {
-    async function getWines() {
-      const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('category', 'Wine')
-        .limit(3);
-      if (data) setFeaturedWines(data);
-    }
-    getWines();
-  }, []);
-
+export default function Home() {
   return (
-    <main>
-      {/* --- HERO SECTION --- */}
-      <section style={{ 
-        height: '80vh', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        textAlign: 'center',
-        padding: '0 20px',
-        background: 'radial-gradient(circle at center, #fffefe 0%, #121212 100%)'
-      }}>
-        <h1 style={{ color: 'var(--metallic-gold)', fontSize: '5rem', fontWeight: '900', margin: 0, letterSpacing: '4px' }}>
-          SPIRIT SOURCE
-        </h1>
-        <p style={{ color: 'var(--warm-cream)', fontSize: '1.2rem', marginTop: '15px', opacity: 0.8, maxWidth: '600px', lineHeight: '1.6' }}>
-          An architectural collection of the world's most refined spirits, curated for the modern connoisseur.
-        </p>
-        <Link href="/products" style={{ marginTop: '40px' }}>
-          <button className="btn-gold" style={{ padding: '15px 45px' }}>Enter The Cellar</button>
-        </Link>
-      </section>
+    <main className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
+      <div className="h-[300px] flex items-center justify-center mb-10">
+        <GooeyText
+          texts={["VODKA", "GIN", "WHISKEY", "SPIRIT", "SOURCE"]}
+          morphTime={1.5}
+          cooldownTime={0.5}
+          className="font-black"
+          textClassName="text-[#A3821A]" 
+        />
+      </div>
 
-      {/* --- FEATURED SECTION --- */}
-      <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '100px 20px' }}>
-        <h2 style={{ color: 'var(--metallic-gold)', fontSize: '1.5rem', letterSpacing: '3px', textAlign: 'center', marginBottom: '60px' }}>
-          FEATURED VINTAGES
+      <div className="text-center z-10">
+        <h2 className="text-xl tracking-[0.3em] mb-8 opacity-80 uppercase">
+          Crafted for the refined palate
         </h2>
+        
+        <Link 
+          href="/products" 
+          className="px-10 py-4 border border-[#A3821A] text-[#A3821A] hover:bg-[#A3821A] hover:text-white transition-all duration-500 tracking-widest font-bold"
+        >
+          ENTER THE COLLECTION
+        </Link>
+      </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' }}>
-          {featuredWines.map((wine) => (
-            <Link key={wine.id} href={`/products/${wine.id}`} style={{ textDecoration: 'none' }}>
-              <div className="premium-card" style={{ padding: '40px', textAlign: 'center' }}>
-                <img src={wine.image_url} alt={wine.name} style={{ height: '300px', objectFit: 'contain', marginBottom: '25px' }} />
-                <h3 style={{ color: 'var(--warm-cream)', fontSize: '1.2rem', marginBottom: '10px' }}>{wine.name}</h3>
-                <p style={{ color: 'var(--metallic-gold)', fontWeight: 'bold', fontSize: '1.3rem' }}>${wine.price}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* Subtle Background Detail */}
+      <div className="absolute inset-0 pointer-events-none opacity-5 overflow-hidden">
+        <h1 className="text-[30vw] font-black leading-none mt-20">LUXURY</h1>
+      </div>
     </main>
   );
 }
