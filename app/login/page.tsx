@@ -32,7 +32,7 @@ export default function Login() {
 
   return (
     <div style={{ backgroundColor: 'var(--brand-dark)', minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-      <form onSubmit={handleSignIn} style={{ backgroundColor: '#111', padding: '40px', border: '1px solid var(--brand-gold)', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <form onSubmit={handleSignIn} style={{ backgroundColor: '#ffffff', padding: '40px', border: '1px solid var(--brand-gold)', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <h2 style={{ color: 'var(--brand-gold)', textAlign: 'center' }}>SIGN IN</h2>
 
         <input
@@ -64,7 +64,8 @@ export default function Login() {
             color: 'black',
             fontWeight: 'bold',
             cursor: loading ? 'not-allowed' : 'pointer',
-            border: 'none'
+            border: '1px solid black ',
+            borderRadius: '8px',
           }}
         >
           {loading ? "SIGNING IN..." : "SIGN IN"}

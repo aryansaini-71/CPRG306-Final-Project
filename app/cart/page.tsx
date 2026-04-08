@@ -30,7 +30,7 @@ export default function CartPage() {
             <div key={item.id} style={{
               display: 'flex',
               alignItems: 'center',
-              backgroundColor: '#111',
+              backgroundColor: '#ffffff',
               border: '1px solid rgba(250, 177, 47, 0.1)',
               padding: '20px',
               marginBottom: '15px',
@@ -108,7 +108,7 @@ export default function CartPage() {
         </div>
 
         <div style={{
-          backgroundColor: '#111',
+          backgroundColor: '#ffffff',
           border: '1px solid rgba(250, 177, 47, 0.1)',
           padding: '20px',
           borderRadius: '8px',
@@ -122,7 +122,7 @@ export default function CartPage() {
               onClick={clearCart}
               style={{
                 backgroundColor: 'var(--brand-red)',
-                color: 'white',
+                color: 'black',
                 border: 'none',
                 padding: '10px 20px',
                 borderRadius: '5px',

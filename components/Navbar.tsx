@@ -4,16 +4,10 @@ import Link from 'next/link';
 import { useCart } from '../app/context/cart-context';
 import { useAuth } from '../app/context/auth-context';
 
-interface NavbarProps {
-  toggleTheme: () => void;
-  currentTheme: string;
-}
-
-export default function Navbar({ toggleTheme, currentTheme }: NavbarProps) {
+export default function Navbar() {
   const { cart } = useCart();
   const { user, signOut } = useAuth();
   
-  // Calculate total items in bag
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -22,15 +16,15 @@ export default function Navbar({ toggleTheme, currentTheme }: NavbarProps) {
       justifyContent: 'space-between', 
       alignItems: 'center',
       padding: '15px 40px',
-      borderBottom: '1px solid var(--border)',
-      backgroundColor: 'var(--bg-card)',
+      borderBottom: '1px solid rgba(0,0,0,0.1)',
+      backgroundColor: '#FFFFFF',
       position: 'sticky',
       top: 0,
       zIndex: 1000
     }}>
       {/* Brand Logo */}
       <Link href="/" style={{ 
-        color: 'var(--gold)', 
+        color: '#A3821A', // Luxury Gold
         fontWeight: '900', 
         textDecoration: 'none', 
         fontSize: '1.2rem',
@@ -39,46 +33,42 @@ export default function Navbar({ toggleTheme, currentTheme }: NavbarProps) {
         SPIRIT SOURCE
       </Link>
 
-      {/* Nav Links */}
+      {/* Navigation Links */}
       <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
-        <Link href="/products" style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '0.9rem' }}>
+        <Link href="/products" style={{ color: '#121212', textDecoration: 'none', fontSize: '0.9rem' }}>
           COLLECTION
         </Link>
         
-        <Link href="/cart" style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>
+        <Link href="/cart" style={{ color: '#121212', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>
           BAG ({cartCount})
         </Link>
 
-        {/* User Auth Section */}
+        {/* User Auth Section - Shows Sign In or Sign Out depending on state */}
         {user ? (
-          <button 
-            onClick={() => signOut()} 
-            style={{ background: 'none', border: 'none', color: 'var(--text-main)', cursor: 'pointer', fontSize: '0.8rem', opacity: 0.7 }}
-          >
-            SIGN OUT
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <span style={{ fontSize: '0.8rem', color: '#121212', opacity: 0.6 }}>
+              {user.email?.split('@')[0]}
+            </span>
+            <button 
+              onClick={() => signOut()} 
+              style={{ 
+                background: 'none', 
+                border: '1px solid #121212', 
+                color: '#121212', 
+                padding: '5px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer', 
+                fontSize: '0.8rem' 
+              }}
+            >
+              SIGN OUT
+            </button>
+          </div>
         ) : (
-          <Link href="/login" style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: '0.9rem' }}>
+          <Link href="/login" style={{ color: '#A3821A', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>
             SIGN IN
           </Link>
         )}
-
-        {/* Theme Toggle Button */}
-        <button 
-          onClick={toggleTheme}
-          style={{ 
-            backgroundColor: 'var(--gold)', 
-            color: 'white', 
-            border: 'none', 
-            padding: '8px 16px', 
-            borderRadius: '20px', 
-            cursor: 'pointer',
-            fontSize: '0.7rem',
-            fontWeight: 'bold'
-          }}
-        >
-          {currentTheme === 'dark' ? 'LIGHT MODE' : 'DARK MODE'}
-        </button>
       </div>
     </nav>
   );

@@ -29,7 +29,7 @@ export default function HomePage() {
         alignItems: 'center', 
         textAlign: 'center',
         padding: '0 20px',
-        background: 'radial-gradient(circle at center, #1E1E1E 0%, #121212 100%)'
+        background: 'radial-gradient(circle at center, #fffefe 0%, #121212 100%)'
       }}>
         <h1 style={{ color: 'var(--metallic-gold)', fontSize: '5rem', fontWeight: '900', margin: 0, letterSpacing: '4px' }}>
           SPIRIT SOURCE
