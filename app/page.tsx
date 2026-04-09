@@ -3,9 +3,9 @@ import { GooeyText } from "@/components/ui/gooey-text-morphing";
 export default function Home() {
   return (
     <main className="min-h-[90vh] flex flex-col items-center justify-center bg-[#F9F9F7] px-4 overflow-hidden relative">
-      <div className="h-[250px] md:h-[400px] flex items-center justify-center w-full relative z-20 pointer-events-none">
+      <div className="h-[800px] md:h-[500px] flex items-center justify-center w-full relative z-20 pointer-events-none">
         <GooeyText
-          texts={["VODKA", "GIN", "WHISKEY", "SPIRIT", "SOURCE"]}
+          texts={["VODKA", "GIN", "WHISKEY", "SPIRIT", "RUM", "WINE", "COOLER"]}
           morphTime={1.5}
           cooldownTime={0.5}
           className="font-black tracking-tighter"

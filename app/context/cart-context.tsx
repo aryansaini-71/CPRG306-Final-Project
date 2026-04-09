@@ -11,12 +11,13 @@ export interface CartItem {
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Omit<CartItem, 'quantity'>) => void;
+  // We updated this so it can accept the custom quantity you send from the page
+  addToCart: (product: Omit<CartItem, 'quantity'> & { quantity?: number }) => void;
   removeFromCart: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
   getTotal: () => number;
-  notification: string | null; // Added for the toast pop-up
+  notification: string | null; 
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -40,24 +41,32 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('spirit-source-cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Helper to trigger the notification
   const showToast = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 3000);
   };
 
-  const addToCart = (product: Omit<CartItem, 'quantity'>) => {
+  // The updated function that handles custom quantities
+  const addToCart = (product: Omit<CartItem, 'quantity'> & { quantity?: number }) => {
+    // If the page sends a specific quantity, use it. Otherwise, default to 1.
+    const amountToAdd = product.quantity || 1;
+
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
+      
       if (existing) {
+        // If it's already in the cart, add the new amount to the current amount
         return prev.map(item =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + amountToAdd }
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      
+      // If it's a new item, add it with the correct amount
+      return [...prev, { ...product, quantity: amountToAdd } as CartItem];
     });
+    
     showToast(`${product.name} added to bag!`);
   };
 
@@ -95,7 +104,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       notification
     }}>
       {children}
-      {/* This renders the toast whenever notification has text */}
       {notification && <div className="toast-notif">{notification}</div>}
     </CartContext.Provider>
   );
