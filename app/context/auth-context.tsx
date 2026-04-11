@@ -1,7 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '../../lib/supabase';
-// Explicitly importing types to fix red line errors
 import type { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {

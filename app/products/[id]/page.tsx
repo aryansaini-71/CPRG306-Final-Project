@@ -11,7 +11,6 @@ export default function ProductDetailPage() {
   const params = useParams();
   const { id } = params;
   
-  // FIX: We grab addToCart instead of dispatch here!
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState<any>(null);
@@ -37,7 +36,6 @@ export default function ProductDetailPage() {
   }, [id]);
 
   const handleAddToBag = () => {
-    // FIX: We use addToCart here to send the item to our bag
     addToCart({ ...product, quantity });
     
     // Show visual feedback that it worked!

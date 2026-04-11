@@ -149,7 +149,7 @@ export default function CartPage() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '30px' }}>
-          <Link href="/products" style={{ color: 'var(--brand-gold)', textDecoration: 'none', fontSize: '1.2rem', fontWeight: 'bold' }}>
+          <Link href="/products" style={{ color: 'var(--brand-gold)', textDecoration: 'none', fontSize: '1.2rem', fontWeight: 'bold', border: '1px solid var(--brand-gold)', padding: '10px 20px', borderRadius: '5px' }}>
             Continue Shopping
           </Link>
         </div>

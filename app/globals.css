@@ -5,10 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --bg-main: #F9F9F7;
-  --bg-card: #FFFFFF;
-  --text-main: #121212;
-  --gold: #A3821A;
+  /* Option 3: Heritage Distillery Palette */
+  --bg-main: #F4F1EA;       /* Aged Paper / Warm Cream */
+  --bg-card: #EAE4D9;       /* Light Sand / Wood undertones */
+  --text-main: #2C3539;     /* Gunmetal / Charcoal */
+  --accent-primary: #B85D19; /* Cognac / Copper */
+  --accent-secondary: #2A4B41; /* Hunter Green */
+  --border-light: rgba(44, 53, 57, 0.1); 
+
+  /* Original Shadcn Variables (DO NOT DELETE) */
   --border: oklch(0.922 0 0);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -43,8 +48,6 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* Add any other custom styles below */
-
 body {
   margin: 0;
   background-color: var(--bg-main);
@@ -66,7 +69,7 @@ body {
 
 .premium-card:hover {
   transform: translateY(-8px);
-  border-color: var(--gold);
+  border-color: var(--accent-primary); /* Uses the new Cognac color */
 }
 
 .toast-notif {

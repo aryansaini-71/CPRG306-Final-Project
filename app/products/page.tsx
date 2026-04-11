@@ -7,8 +7,6 @@ import { useCart } from "@/app/context/cart-context";
 import { Search, Plus, Minus } from "lucide-react";
 
 export default function ProductsPage() {
-  // FIX: We changed 'dispatch' to 'addToCart'. 
-  // (If your context uses 'addItem' instead, just change the word here and below!)
   const { addToCart } = useCart();
   
   // -- STATE VARIABLES --
