@@ -47,19 +47,24 @@ export default function Navbar() {
           )}
         </Link>
 
-        {user ? (
+      {user ? (
+        <div className="flex items-center gap-4">
+          <Link href="/profile" title="My Vault">
+            <User className="w-5 h-5 text-[#2C3539] hover:text-[#B85D19] transition-colors" />
+          </Link>
           <button 
             onClick={() => signOut()} 
-            className="text-[#2C3539]/60 hover:text-[#B85D19] transition-colors"
+            className="text-[#2C3539]/40 hover:text-[#B85D19] transition-colors"
             title="Sign Out"
           >
             <LogOut className="w-5 h-5" />
           </button>
-        ) : (
-          <Link href="/login" className="text-[#B85D19] hover:opacity-70 transition-opacity" title="Sign In">
-            <User className="w-5 h-5" />
-          </Link>
-        )}
+        </div>
+      ) : (
+        <Link href="/login" className="text-[#B85D19] hover:opacity-70 transition-opacity" title="Sign In">
+          <User className="w-5 h-5" />
+        </Link>
+      )}
       </div>
     </nav>
   );
