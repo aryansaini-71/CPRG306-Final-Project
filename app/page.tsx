@@ -1,37 +1,76 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { ArrowRight, Trophy, ShieldCheck, Globe } from "lucide-react";
 import { GooeyText } from "@/components/ui/gooey-text-morphing";
 
-export default function Home() {
+export default function HomePage() {
+  const [productCount, setProductCount] = useState(0);
+
+  useEffect(() => {
+    async function getStats() {
+      const { count } = await supabase.from('products').select('*', { count: 'exact', head: true });
+      if (count) setProductCount(count);
+    }
+    getStats();
+  }, []);
+
   return (
-    <main className="min-h-[90vh] flex flex-col items-center justify-center bg-[#F9F9F7] px-4 overflow-hidden relative">
-      <div className="h-[800px] md:h-[500px] flex items-center justify-center w-full relative z-20 pointer-events-none">
-        <GooeyText
-          texts={["VODKA", "GIN", "WHISKEY", "SPIRIT", "RUM", "WINE", "COOLER"]}
-          morphTime={1.5}
-          cooldownTime={0.5}
-          className="font-black tracking-tighter"
-          textClassName="text-[#A3821A]" 
-        />
+    <main className="min-h-screen bg-[#F4F1EA] flex flex-col items-center justify-center relative overflow-hidden">
+      
+      {/* Background Decor */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none flex items-center justify-center">
+        <h1 className="text-[30vw] font-black leading-none">EST. 2026</h1>
       </div>
 
-      <div className="text-center z-50 -mt-10 md:-mt-20 relative">
-        <p className="text-sm md:text-base tracking-[0.4em] mb-10 text-black/60 uppercase font-light">
-          THE ART OF EXTRAORDINARY TASTE
+      <div className="relative z-10 text-center px-6">
+        <p className="text-[10px] font-black tracking-[0.5em] text-[#B85D19] uppercase mb-6">
+          Premium Spirits & Rare Finds
         </p>
-        <a 
-          href="/products" 
-          className="group relative inline-block px-12 py-5 border border-[#A3821A] text-[#A3821A] overflow-hidden transition-all duration-500 bg-white"
-        >
-          <span className="relative z-10 tracking-[0.2em] font-bold group-hover:text-white transition-colors duration-500">
-            EXPLORE COLLECTION
-          </span>
-          <div className="absolute inset-0 bg-[#A3821A] transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-        </a>
+        
+        <h1 className="text-7xl md:text-9xl font-black text-[#2C3539] tracking-tighter uppercase leading-[0.85] mb-6">
+          The <br /> 
+          
+          {/* ---  CUSTOM GOOEY COMPONENT --- */}
+          <div className="h-[1.2em] flex items-center justify-center -my-2 relative z-20">
+            <GooeyText 
+              texts={["Spirit", "Vodka", "Wine", "Liquor"]} 
+              morphTime={1.2} 
+              cooldownTime={1.5} 
+              textClassName="text-[#B85D19]" 
+            />
+          </div>
+          
+          Source
+        </h1>
+
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
+          <Link 
+            href="/products" 
+            className="group px-12 py-5 bg-[#2C3539] text-white text-[10px] font-black tracking-[0.3em] uppercase transition-all hover:bg-[#B85D19]"
+          >
+            Enter the Vault
+          </Link>
+          <Link href="/profile" className="text-[10px] font-black tracking-[0.3em] uppercase text-[#2C3539]/40 hover:text-[#2C3539] transition-colors">
+            My Order History
+          </Link>
+        </div>
       </div>
 
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.04] z-0">
-        <h1 className="text-[25vw] font-black leading-none select-none uppercase">
-          LIQUOR
-        </h1>
+      {/* Bottom Insights */}
+      <div className="absolute bottom-12 left-0 w-full px-10">
+        <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-8 border-t border-[#2C3539]/10 pt-10">
+          <div className="flex items-center gap-4">
+            <Trophy size={16} className="text-[#B85D19]" />
+            <span className="text-[10px] font-black text-[#2C3539] uppercase tracking-widest">{productCount}+ Spirits</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <ShieldCheck size={16} className="text-[#2A4B41]" />
+            <span className="text-[10px] font-black text-[#2C3539] uppercase tracking-widest">Secure Ledger</span>
+          </div>
+        </div>
       </div>
     </main>
   );
