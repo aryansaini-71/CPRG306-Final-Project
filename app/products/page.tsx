@@ -5,9 +5,11 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/app/context/cart-context";
 import { Search, Plus, Minus } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export default function ProductsPage() {
   const { addToCart } = useCart();
+  const searchParams  = useSearchParams();
   
   // -- STATE VARIABLES --
   const [products, setProducts] = useState<any[]>([]);
@@ -30,6 +32,14 @@ export default function ProductsPage() {
     }
     fetchProducts();
   }, []);
+
+  // Read ?category= from the URL and set the active tab
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat && categories.includes(cat)) {
+      setSelectedCategory(cat);
+    }
+  }, [searchParams]);
 
   // -- HELPER FUNCTIONS --
   
