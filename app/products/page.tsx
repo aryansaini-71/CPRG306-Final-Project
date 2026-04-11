@@ -4,24 +4,20 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useCart } from "@/app/context/cart-context";
-import { Search, Plus, Minus } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { Search, Plus, Minus, ChevronDown, Filter } from "lucide-react";
 
 export default function ProductsPage() {
   const { addToCart } = useCart();
-  const searchParams  = useSearchParams();
   
-  // -- STATE VARIABLES --
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortBy, setSortBy] = useState("newest");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
 
-  // Your custom categories
   const categories = ["All", "Hard Liquor", "Wine", "Cooler"];
 
-  // -- FETCH DATA FROM SUPABASE --
   useEffect(() => {
     async function fetchProducts() {
       const { data, error } = await supabase.from('products').select('*');
@@ -33,171 +29,159 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
-  // Read ?category= from the URL and set the active tab
-  useEffect(() => {
-    const cat = searchParams.get("category");
-    if (cat && categories.includes(cat)) {
-      setSelectedCategory(cat);
-    }
-  }, [searchParams]);
-
-  // -- HELPER FUNCTIONS --
-  
-  // Safely updates the quantity for a specific product ID on the screen
   const updateQuantity = (id: string, delta: number) => {
-    setQuantities((prev) => {
-      const currentQty = prev[id] || 1;
-      const newQty = Math.max(1, currentQty + delta); // Prevents going below 1
-      return { ...prev, [id]: newQty };
-    });
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: Math.max(1, (prev[id] || 1) + delta)
+    }));
   };
 
-  // Filters the products based on your search bar and category tabs
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+  // --- SORTING AND FILTERING LOGIC ---
+  const filteredAndSortedProducts = products
+    .filter((product) => {
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (sortBy === "price-low") return a.price - b.price;
+      if (sortBy === "price-high") return b.price - a.price;
+      if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      return 0;
+    });
 
-    return matchesSearch && matchesCategory;
-  });
+  if (loading) return (
+    <div className="pt-40 text-center bg-[#F4F1EA] min-h-screen">
+      <div className="inline-block animate-pulse text-[#B85D19] font-black tracking-[0.5em] uppercase text-sm">
+        Opening the Vault...
+      </div>
+    </div>
+  );
 
-  // -- LOADING SCREEN --
-  if (loading) {
-    return <div className="pt-40 text-center tracking-widest uppercase opacity-50 font-bold">Opening Vault...</div>;
-  }
-
-  // -- MAIN UI --
   return (
-    <main className="min-h-screen bg-[#F9F9F7] pt-32 px-6 md:px-20 pb-20">
+    <main className="min-h-screen bg-[#F4F1EA] pt-32 px-6 md:px-20 pb-32">
       <div className="max-w-7xl mx-auto">
         
-        <h1 className="text-4xl font-black tracking-widest text-[#121212] mb-12 uppercase">
-          The Collection
-        </h1>
+        {/* HERO TITLE */}
+        <div className="mb-16 text-center md:text-left">
+          <p className="text-[10px] font-black tracking-[0.5em] text-[#B85D19] uppercase mb-4">Established Collection</p>
+          <h1 className="text-6xl md:text-7xl font-black tracking-tighter text-[#2C3539] uppercase leading-none">
+            The <span className="text-transparent border-text stroke-current" style={{ WebkitTextStroke: '1px #2C3539' }}>OG</span>
+          </h1>
+        </div>
 
-        {/* SEARCH AND FILTER BAR */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+        {/* CONTROLS INTERFACE */}
+        <div className="flex flex-col gap-10 mb-20">
           
-          {/* Category Tabs */}
-          <div className="flex gap-6 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`text-xs font-bold tracking-widest uppercase transition-colors whitespace-nowrap ${
-                  selectedCategory === category 
-                    ? "text-[#A3821A] border-b-2 border-[#A3821A] pb-1" 
-                    : "text-black/40 hover:text-black/80"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
+          {/* Top Row: Categories */}
+          <div className="flex items-center justify-between border-b border-[#2C3539]/10 pb-6 overflow-x-auto no-scrollbar">
+            <div className="flex gap-10">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`text-[11px] font-black tracking-[0.2em] uppercase transition-all whitespace-nowrap relative pb-2 ${
+                    selectedCategory === category 
+                      ? "text-[#B85D19]" 
+                      : "text-[#2C3539]/40 hover:text-[#2C3539]"
+                  }`}
+                >
+                  {category}
+                  {selectedCategory === category && (
+                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#B85D19]" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Search Input */}
-          <div className="relative w-full md:w-72">
-            <input
-              type="text"
-              placeholder="SEARCH SPIRITS..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-transparent border-b border-black/20 py-2 pl-8 pr-4 text-sm focus:outline-none focus:border-[#A3821A] transition-colors placeholder:tracking-widest placeholder:text-xs"
-            />
-            <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
-          </div>
+          {/* Bottom Row: Search & Sort */}
+          <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
+            <div className="relative w-full md:w-96 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2C3539]/30 group-focus-within:text-[#B85D19] transition-colors" />
+              <input
+                type="text"
+                placeholder="SEARCH BY NAME OR SPIRIT..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white/50 backdrop-blur-sm border border-[#2C3539]/10 py-4 pl-12 pr-4 text-[10px] font-bold tracking-widest focus:outline-none focus:border-[#B85D19] transition-all rounded-none placeholder:text-[#2C3539]/20"
+              />
+            </div>
 
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <div className="flex items-center gap-2 text-[10px] font-black text-[#2C3539]/40 uppercase tracking-widest mr-2">
+                <Filter size={12} /> Sort By
+              </div>
+              <div className="relative flex-1 md:flex-none">
+                <select 
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full md:w-56 bg-white border border-[#2C3539]/10 py-4 px-6 text-[10px] font-black tracking-widest uppercase appearance-none focus:outline-none focus:border-[#B85D19] cursor-pointer rounded-none"
+                >
+                  <option value="newest">Recent Additions</option>
+                  <option value="price-low">Value: Low to High</option>
+                  <option value="price-high">Value: High to Low</option>
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-[#2C3539]/40 pointer-events-none" />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* PRODUCTS GRID */}
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-20 text-black/50 tracking-widest text-sm uppercase">
-            No items found matching your criteria.
+        {filteredAndSortedProducts.length === 0 ? (
+          <div className="text-center py-40 border-2 border-dashed border-[#2C3539]/10 bg-white/30">
+            <p className="text-[#2C3539]/30 tracking-[0.4em] text-[10px] uppercase font-black">
+              Zero matches found in the ledger
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {filteredProducts.map((product) => {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24">
+            {filteredAndSortedProducts.map((product) => {
               const currentQty = quantities[product.id] || 1;
 
               return (
                 <div key={product.id} className="group flex flex-col">
-                  
-                  {/* Clickable Area for Product Details */}
-                  <Link href={`/products/${product.id}`} className="block cursor-pointer">
-                    <div className="aspect-[3/4] bg-white border border-black/5 overflow-hidden mb-6 relative">
-                      {product.image_url ? (
-                        <img 
-                          src={product.image_url} 
-                          alt={product.name} 
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-black/10 uppercase font-bold text-xs tracking-widest">
-                          No Image
-                        </div>
-                      )}
+                  {/* Image Card */}
+                  <Link href={`/products/${product.id}`} className="relative mb-8 block aspect-[4/5] overflow-hidden bg-white border border-[#2C3539]/5 p-12 transition-all group-hover:border-[#B85D19]/30 group-hover:shadow-2xl group-hover:shadow-[#B85D19]/5">
+                    <img 
+                      src={product.image_url} 
+                      alt={product.name} 
+                      className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-105" 
+                    />
+                    <div className="absolute top-6 right-6 text-[9px] font-black tracking-widest text-[#2C3539]/20 uppercase">
+                      ID-{product.id.toString().padStart(4, '0')}
                     </div>
-                    
-                    <p className="text-[10px] tracking-[0.3em] text-[#A3821A] uppercase font-bold mb-1">
-                      {product.category || "Uncategorized"}
-                    </p>
-                    <h2 className="text-lg font-bold tracking-wide uppercase mb-1 group-hover:text-[#A3821A] transition-colors">
-                      {product.name}
-                    </h2>
-                    <p className="text-[#121212] font-medium mb-4">
-                      ${product.price.toFixed(2)}
-                    </p>
                   </Link>
                   
-                  {/* Add to Cart Controls */}
-                  <div className="flex items-center gap-4 mt-auto">
-                    
-                    {/* Quantity - and + buttons */}
-                    <div className="flex items-center border border-black/20 rounded">
-                      <button 
-                        onClick={() => updateQuantity(product.id, -1)}
-                        className="p-2 text-black/60 hover:text-black transition-colors"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </button>
-                      <span className="w-8 text-center text-xs font-bold">
-                        {currentQty}
-                      </span>
-                      <button 
-                        onClick={() => updateQuantity(product.id, 1)}
-                        className="p-2 text-black/60 hover:text-black transition-colors"
-                      >
-                        <Plus className="w-3 h-3" />
-                      </button>
+                  {/* Product Info */}
+                  <div className="flex justify-between items-start mb-6">
+                    <div>
+                      <p className="text-[9px] tracking-[0.4em] text-[#B85D19] uppercase font-black mb-2">
+                        {product.category}
+                      </p>
+                      <h2 className="text-2xl font-black tracking-tighter uppercase text-[#2C3539] group-hover:text-[#B85D19] transition-colors">
+                        {product.name}
+                      </h2>
+                    </div>
+                    <p className="text-lg font-bold text-[#2C3539]">${product.price.toFixed(2)}</p>
+                  </div>
+
+                  {/* Add to Cart Actions */}
+                  <div className="flex items-center gap-2 mt-auto">
+                    <div className="flex items-center border border-[#2C3539]/10 bg-white h-12">
+                      <button onClick={() => updateQuantity(product.id, -1)} className="px-3 h-full hover:bg-[#F4F1EA] transition-colors"><Minus size={12}/></button>
+                      <span className="w-8 text-center text-xs font-black">{currentQty}</span>
+                      <button onClick={() => updateQuantity(product.id, 1)} className="px-3 h-full hover:bg-[#F4F1EA] transition-colors"><Plus size={12}/></button>
                     </div>
 
-                    {/* The Add To Bag Button */}
                     <button 
-                      onClick={(e) => {
-                        e.preventDefault(); 
-                        e.stopPropagation();
-                        
-                        // FIX: Using addToCart here instead of dispatch
-                        addToCart({ ...product, quantity: currentQty });
-                        
-                        // Visual feedback (turns black and says ADDED ✓)
-                        const btn = e.currentTarget;
-                        btn.innerText = "ADDED ✓";
-                        btn.classList.add("bg-black", "text-white");
-                        
-                        setTimeout(() => {
-                          btn.innerText = "ADD TO BAG";
-                          btn.classList.remove("bg-black", "text-white");
-                          setQuantities(prev => ({ ...prev, [product.id]: 1 }));
-                        }, 1500);
-                      }}
-                      className="flex-1 text-[10px] font-black tracking-widest border border-[#121212] bg-transparent text-[#121212] py-3 hover:bg-[#121212] hover:text-white transition-all text-center rounded uppercase"
+                      onClick={() => addToCart({ ...product, quantity: currentQty })}
+                      className="flex-1 h-12 bg-[#2C3539] text-white text-[10px] font-black tracking-[0.2em] uppercase hover:bg-[#B85D19] transition-all border-radius-10"
                     >
                       ADD TO BAG
                     </button>
                   </div>
-
                 </div>
               );
             })}
