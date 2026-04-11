@@ -87,6 +87,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setCart([]);
+    localStorage.removeItem('spirit-source-cart');
   };
 
   const getTotal = () => {

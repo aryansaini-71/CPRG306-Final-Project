@@ -1,6 +1,9 @@
 import Link from "next/link";
 
 export default function Footer() {
+
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-white border-t border-black/5 mt-20">
       {/* Main Footer Grid */}
@@ -109,7 +112,7 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-black/5 py-5 px-6 md:px-10 flex flex-col md:flex-row items-center justify-between gap-3">
         <p className="text-[10px] tracking-[0.2em] text-black/30 uppercase">
-          &copy; {new Date().getFullYear()} Spirit Source. All rights reserved.
+          &copy; {currentYear} Spirit Source. All rights reserved.
         </p>
         <div className="flex items-center gap-6">
           <Link href="/privacy" className="text-[10px] tracking-widest text-black/30 hover:text-[#A3821A] transition-colors uppercase">

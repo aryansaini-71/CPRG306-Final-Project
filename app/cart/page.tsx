@@ -1,10 +1,33 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../context/cart-context';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, getTotal, clearCart } = useCart();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleCheckout = async () => {
+  setLoading(true);
+  setError(null);
+  try {
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: cart }),
+    });
+    const data = await res.json();
+    console.log("Response status:", res.status);
+    console.log("Response data:", data);
+    if (!res.ok) throw new Error(data.error || "Checkout failed");
+    window.location.href = data.url;
+  } catch (err: unknown) {
+    console.log("Caught error:", err);
+    setError(err instanceof Error ? err.message : "Something went wrong");
+    setLoading(false);
+  }
+};
 
   if (cart.length === 0) {
     return (
@@ -133,6 +156,8 @@ export default function CartPage() {
               Clear Cart
             </button>
             <button
+              onClick={handleCheckout}
+              disabled={loading}
               style={{
                 backgroundColor: 'var(--brand-gold)',
                 color: 'var(--brand-dark)',
@@ -143,7 +168,7 @@ export default function CartPage() {
                 fontWeight: 'bold'
               }}
             >
-              Checkout
+              {loading ? 'Redirecting...' : 'Checkout'}
             </button>
           </div>
         </div>
